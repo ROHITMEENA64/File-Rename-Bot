@@ -1,7 +1,12 @@
-# Use the official Python image
-FROM python:3.9-slim-buster
+# Use a supported Debian base (bullseye) to avoid EOL buster repos
+FROM python:3.9-slim-bullseye
 
-RUN apt-get update -qq && apt-get -y install ffmpeg
+# avoid prompts, install ffmpeg and certs, keep image small
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
 WORKDIR /app
